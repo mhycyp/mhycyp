@@ -1,0 +1,544 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Posts on MHY</title>
+		<link>https://www.96mhy.top/posts/</link>
+		<description>Recent content in Posts on MHY</description>
+		<generator>Hugo -- gohugo.io</generator>
+		<language>en-us</language>
+		<copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+		<lastBuildDate>Mon, 28 Oct 2019 16:14:25 +0800</lastBuildDate>
+		<atom:link href="https://www.96mhy.top/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>Ubuntu Server(二)</title>
+			<link>https://www.96mhy.top/posts/ubuntu_server2/</link>
+			<pubDate>Mon, 28 Oct 2019 16:14:25 +0800</pubDate>
+			
+			<guid>https://www.96mhy.top/posts/ubuntu_server2/</guid>
+			<description>Ubuntu Server作家庭NAS及服务器（二） &amp;emsp; 在之前的博客中，提到收了一台蜗牛星际，安装Ubuntu 18.04 LTS作为家用NAS及服务器，这篇博客主要是对整体情况做一下概括，讲讲我主要在上面实现了哪些功能，以及目前看来的使用情况。
+特别要强调的是，蜗牛星际曾是一台矿机，加上他采用的硬件多数为山寨货，无论成色如何，并不建议把他真的作为家用的NAS来存放重要数据（照片、文件、视频等），尤其是用它来带3个及以上的3.5寸硬盘。归根结底还是要做好文件备份工作，蜗牛只是作为试水的工具。
+&amp;emsp; 首先，作为一个NAS，我觉得他需要有的功能应该具备以下几点：
+ 离线下载 文件同步 海报墙 远程访问  实现的功能 &amp;emsp; 为了实现离线下载，我采用了在之前倒腾树莓派时候就用过的软件aria2，配合AriaNG可以实现所有平台的设备只要有浏览器就可以进行下载的管理。 AriaNG电脑端
+AriaNG手机端
+同时，由于之前在国内彻底被扼杀的同步软件Resilio sync(原名BT sync) 在国内目前又可以部分连接，所以也安装了Resilio sync，配合神key的使用在追剧的时候不要太爽。 Resilio Sync
+&amp;emsp; 文件同步的话，有很多协议可以采用，最广泛的无疑还是Samba协议，当然，得益于Linux良好的系统特性，其他协议想要支持也是信手拈来。
+&amp;emsp; 海报墙的话，因为蜗牛的性能也基本上限制了他的转码水平，海报墙更多的还是停留在看看的阶段。这里我用了Plex来刮削整理电影和剧集。同时，Plex自身就带有DLNA功能，开启后可以在其他设备上访问到Plex的播放列表。 Plex界面
+&amp;emsp; 因为这是放在宿舍，没有专线宽带，毫无疑问需要DDNS，同时因为移动大内网，IPv4的公网访问直接就不想了，万幸南京移动已经部署了公网IPv6，而且三大运营商的4g网络也已经分配IPv6了，学校的wifi也在这学期上了IPv6，所以，整体的公网访问没有什么大碍，后面具体再谈谈实际体验。 IPv6远程访问
+实现方法 &amp;emsp; 下面简单介绍如何实现上述的几个功能。
+离线下载 因为一开始折腾的时候，对docker还只是听说过，并没有真正使用过，所以对于aria2的使用还是直接安装在系统里。aria2官网提供了比较详细的下载、安装和使用教程。当然，对于像我这种小白，可以采用逗比大佬的一键脚本。
+wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubiBackup/doubi/master/aria2.sh &amp;amp;&amp;amp; chmod +x aria2.sh &amp;amp;&amp;amp; bash aria2.sh 根据提示一步一步即可完成安装。
+这只是aria2后台的安装，要实现web界面管理还需要安装AriaNG来实现。 我采用的是Apache2作为web服务器，将AriaNG放到web服务器所对应的文件夹，就可以通过直接访问对应的ip来管理aria2。然后在AriaNG设置中，填入ip地址和端口，以及RPC密钥即可连接到aria2后台服务。 AriaNG设置界面
+Resilio Sync 安装 &amp;emsp; Resilio Sync配合神key的使用对与追剧来说简直就是大杀器，类似于人人网的RSS下载，在添加key后可以自动同步更新的剧集，在应用pro版证书后，还可以进行选择性同步。
+首先就是去Resilio Sync的帮助中心下载对应系统版本的.deb文件。下载完成后进入对应文件目录安装软件。
+sudo dpkg -i &amp;lt;resilio-sync.deb&amp;gt; 然后进入/etc/resilio-sync/编辑config.json文件
+{ &amp;#34;storage_path&amp;#34; : &amp;#34;/var/lib/resilio-sync/&amp;#34;, &amp;#34;pid_file&amp;#34; : &amp;#34;/var/run/resilio-sync/sync.</description>
+			<content type="html"><![CDATA[
+
+<h1 id="ubuntu-server作家庭nas及服务器-二"><strong>Ubuntu Server作家庭NAS及服务器（二）</strong></h1>
+
+<p>&emsp; 在之前的博客中，提到收了一台蜗牛星际，安装<code>Ubuntu 18.04 LTS</code>作为家用NAS及服务器，这篇博客主要是对整体情况做一下概括，讲讲我主要在上面实现了哪些功能，以及目前看来的使用情况。</p>
+
+<hr />
+
+<p><em>特别要强调的是，蜗牛星际曾是一台矿机，加上他采用的硬件多数为山寨货，无论成色如何，并不建议把他真的作为家用的NAS来存放重要数据（照片、文件、视频等），尤其是用它来带3个及以上的3.5寸硬盘。归根结底还是要做好文件备份工作，蜗牛只是作为试水的工具。</em></p>
+
+<p>&emsp; 首先，作为一个<code>NAS</code>，我觉得他需要有的功能应该具备以下几点：</p>
+
+<ol>
+<li>离线下载</li>
+<li>文件同步</li>
+<li>海报墙</li>
+<li>远程访问</li>
+</ol>
+
+<h2 id="实现的功能"><strong>实现的功能</strong></h2>
+
+<p>&emsp; 为了实现离线下载，我采用了在之前倒腾树莓派时候就用过的软件<code>aria2</code>，配合<code>AriaNG</code>可以实现所有平台的设备只要有浏览器就可以进行下载的管理。
+<img src="/image/ubuntu/aria2_win.jpg" alt="aria2_win" />
+<center><code>AriaNG</code>电脑端</center></p>
+
+<p><img src="/image/ubuntu/aria2_phone1.jpg" alt="aria2_phone" />
+<center><code>AriaNG</code>手机端</center></p>
+
+<p>同时，由于之前在国内彻底被扼杀的同步软件<code>Resilio sync</code>(原名<code>BT sync</code>) 在国内目前又可以部分连接，所以也安装了<code>Resilio sync</code>，配合<code>神key</code>的使用在追剧的时候不要太爽。
+<img src="/image/ubuntu/resilio_sync.jpg" alt="resilio_sync" />
+<center><code>Resilio Sync</code></center></p>
+
+<p>&emsp; 文件同步的话，有很多协议可以采用，最广泛的无疑还是<code>Samba</code>协议，当然，得益于<code>Linux</code>良好的系统特性，其他协议想要支持也是信手拈来。</p>
+
+<p>&emsp; 海报墙的话，因为蜗牛的性能也基本上限制了他的转码水平，海报墙更多的还是停留在看看的阶段。这里我用了<code>Plex</code>来刮削整理电影和剧集。同时，<code>Plex</code>自身就带有<code>DLNA</code>功能，开启后可以在其他设备上访问到<code>Plex</code>的播放列表。
+<img src="/image/ubuntu/plex.jpg" alt="Plex" />
+<center><code>Plex</code>界面</center></p>
+
+<p>&emsp; 因为这是放在宿舍，没有专线宽带，毫无疑问需要<code>DDNS</code>，同时因为移动大内网，<code>IPv4</code>的公网访问直接就不想了，万幸南京移动已经部署了公网<code>IPv6</code>，而且三大运营商的<code>4g</code>网络也已经分配<code>IPv6</code>了，学校的<code>wifi</code>也在这学期上了<code>IPv6</code>，所以，整体的公网访问没有什么大碍，后面具体再谈谈实际体验。
+<img src="/image/ubuntu/home.jpg" alt="home_ipv6" />
+<center><code>IPv6</code>远程访问</center></p>
+
+<hr />
+
+<h2 id="实现方法"><strong>实现方法</strong></h2>
+
+<p>&emsp; 下面简单介绍如何实现上述的几个功能。</p>
+
+<h3 id="离线下载">离线下载</h3>
+
+<p>因为一开始折腾的时候，对docker还只是听说过，并没有真正使用过，所以对于<code>aria2</code>的使用还是直接安装在系统里。<a href="https://aria2.github.io/">aria2</a>官网提供了比较详细的下载、安装和使用教程。当然，对于像我这种小白，可以采用<a href="https://doubibackup.com/zuigoj__.html">逗比大佬的一键脚本</a>。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubiBackup/doubi/master/aria2.sh <span class="o">&amp;&amp;</span> chmod +x aria2.sh <span class="o">&amp;&amp;</span> bash aria2.sh</code></pre></div>
+<p>根据提示一步一步即可完成安装。</p>
+
+<p>这只是<code>aria2</code>后台的安装，要实现<code>web</code>界面管理还需要安装<a href="http://ariang.mayswind.net/zh_Hans/">AriaNG</a>来实现。
+我采用的是<code>Apache2</code>作为<code>web</code>服务器，将<code>AriaNG</code>放到<code>web</code>服务器所对应的文件夹，就可以通过直接访问对应的<code>ip</code>来管理<code>aria2</code>。然后在<code>AriaNG</code>设置中，填入<code>ip</code>地址和端口，以及<code>RPC</code>密钥即可连接到<code>aria2</code>后台服务。
+<img src="/image/ubuntu/AriaNG_setting.jpg" alt="AriaNG_setting" />
+<center><code>AriaNG</code>设置界面</center></p>
+
+<h3 id="resilio-sync">Resilio Sync</h3>
+
+<h5 id="安装">安装</h5>
+
+<p>&emsp; <code>Resilio Sync</code>配合<code>神key</code>的使用对与追剧来说简直就是大杀器，类似于人人网的<code>RSS</code>下载，在添加<code>key</code>后可以自动同步更新的剧集，在应用<code>pro</code>版证书后，还可以进行选择性同步。</p>
+
+<p>首先就是去<code>Resilio Sync</code>的帮助中心<a href="https://help.resilio.com/hc/en-us/articles/206178924">下载</a>对应系统版本的<code>.deb</code>文件。下载完成后进入对应文件目录安装软件。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo dpkg -i &lt;resilio-sync.deb&gt;</code></pre></div>
+<p>然后进入<code>/etc/resilio-sync/</code>编辑<code>config.json</code>文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+    <span class="nt">&#34;storage_path&#34;</span> <span class="p">:</span> <span class="s2">&#34;/var/lib/resilio-sync/&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;pid_file&#34;</span> <span class="p">:</span> <span class="s2">&#34;/var/run/resilio-sync/sync.pid&#34;</span><span class="p">,</span>
+
+    <span class="nt">&#34;webui&#34;</span> <span class="p">:</span>
+    <span class="p">{</span>
+        <span class="nt">&#34;listen&#34;</span> <span class="p">:</span> <span class="s2">&#34;127.0.0.1:8888&#34;</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+<p>其中<code>listen</code>字段中的<code>8888</code>定义了对应的端口，如果想要实现外网访问，可以设置端口转发（类似于<code>webmin</code>）来将端口转发到其他的端口来实现外网访问。</p>
+
+<p>运行以下以下命令来启动软件</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo systemctl start resilio-sync</code></pre></div>
+<p>最后要实现选择性同步，需要在软件中应用<code>pro</code>的<a href="https://www.tonyhead.com/book/export/html/4772">licence</a> [详细的内容可以参考这个页面]。</p>
+
+<h5 id="神key-的使用"><code>神key</code>的使用</h5>
+
+<p>在<code>Sync</code>主界面依次点击[添加文件夹] - [输入密钥或链接]，然后填入下面的<code>Key</code>即可：
+BCWHZRSLANR64CGPTXRE54ENNSIUE5SMO</p>
+
+<hr />
+
+<h3 id="文件同步">文件同步</h3>
+
+<p>文件同步我采用的是<code>Samba</code>协议，值得一提的是<code>ios13</code>中[文件]应用增加了对<code>Samba</code>协议的支持。具体配置在这里就不展开了，可以参考我<a href="https://www.96mhy.top/posts/webmin/">webmin</a>那篇博客。</p>
+
+<hr />
+
+<p>海报墙和远程访问的实现我都部署在<code>docker</code>上了，<code>docker</code>的<code>web</code>管理采用了<code>portainer</code>。</p>
+
+<h3 id="海报墙">海报墙</h3>
+
+<p>&emsp; 我采用的是<code>Plex</code>，通过<code>docker</code>部署后，在<code>docker</code>中将放有电影视频的目录添加到对应的<code>volumn</code>中。
+<img src="/image/ubuntu/portainer.jpg" alt="portainer" />
+<center><code>docker</code>中添加目录</center></p>
+
+<p><code>Plex</code>默认的端口是<code>32400</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-https" data-lang="https">ip:32400</code></pre></div>
+<p>访问后创建用户，最后就是添加目录到<code>Plex</code>中。
+<img src="/image/ubuntu/plex_doc.jpg" alt="plex_doc" />
+<center><code>Plex</code>中添加目录</center></p>
+
+<hr />
+
+<h3 id="远程访问">远程访问</h3>
+
+<p>&emsp; 我将<code>DDNS</code>也部署在<code>docker</code>中，采用的是<code>sanjuss/aliyun-ddns</code>,这是我使用过好几个后发现的对<code>IPv6</code>支持比较好的<code>docker</code>。
+<img src="/image/ubuntu/ddns.jpg" alt="ddns" />
+<center><code>DDNS</code>日志</center></p>
+
+<p><code>docker</code>中安装后，需要设置<code>Env</code>。[我用的是阿里云的DDNS]
+<img src="/image/ubuntu/ddns_set.jpg" alt="ddns_set" />
+<center><code>DDNS</code>设置</center></p>
+
+<p><code>AccessKey ID</code>和<code>AccessKey Secret</code>推荐使用<a href="https://ram.console.aliyun.com/">子用户AccessKey(访问控制台RAM)</a> 分配的权限。使用<code>子用户AccessKey</code>，请分配<code>AliyunDNSReadOnlyAccess</code>(只读访问云解析(DNS)的权限) 和<code>AliyunDNSFullAccess</code>(管理云解析(DNS)的权限) 这两个权限！
+如果图省事，也可以使用<a href="https://usercenter.console.aliyun.com/#/manage/ak">全局AccessKey</a>。 但此时泄露或者发布<code>全局AccessKey</code>是很危险的!!!</p>
+
+<p>使用体验上来说，目前使用一直是没有问题的。在我需要访问的时候都是可以正常访问到的。</p>
+
+<h3 id="总结"><strong>总结</strong></h3>
+
+<p>我目前用蜗牛星际所实现的功能基本上就如上所述。</p>
+
+<p>具体使用场景可以这么理解：在需要BT下载的时候可以使用<code>AriaNG</code>，如果是电影或者电视剧的话一般就先去<code>神key</code>看看有没有。如果有的话，我觉得<code>Resilio Sync</code>的下载速度通常更快一些。</p>
+
+<p>我有一个旧盘，作为下载的缓冲盘，下载完成后，将资源再转移到专门存储对应类型文件的文件夹。<code>Plex</code>会自动刷新识别，识别不了或出错的时候再手动修正匹配。</p>
+
+<p>电脑上通过将<code>Samba</code>共享的文件夹添加为一个网络位置[貌似这样可以较少硬盘唤醒次数],<code>Potplayer</code>直接播放。手机上<code>ios</code>端可以采用<code>nPlayer</code>和<code>Infuse</code>(<code>Infuse</code>可以连接<code>Plex</code>)；文件管理的话用自带的[文件]应用。</p>
+
+<p>总结而言，我只是将它当作一个玩具，并不敢将重要的资料存储在上面。</p>
+
+<p>最后看看整个系统的开机时间，上次关机是因为不小心拔错了线。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">16</span>:11:36 up <span class="m">14</span> days,  <span class="m">2</span>:20,  <span class="m">2</span> users,  load average: <span class="m">0</span>.23, <span class="m">0</span>.40, <span class="m">0</span>.41</code></pre></div>]]></content>
+		</item>
+		
+		<item>
+			<title>Webmin</title>
+			<link>https://www.96mhy.top/posts/webmin/</link>
+			<pubDate>Sun, 27 Oct 2019 13:42:35 +0800</pubDate>
+			
+			<guid>https://www.96mhy.top/posts/webmin/</guid>
+			<description>webmin的安装和使用 正如webmin官网所描述： &amp;gt;Webmin is a web-based interface for system administration for Unix. Using any modern web browser, you can setup user accounts, Apache, DNS, file sharing and much more. Webmin removes the need to manually edit Unix configuration files like /etc/passwd, and lets you manage a system from the console or remotely.
+webmin做的主要工作就是通过web界面来编辑系统和应用程序的配置文件。其中，支持的应用程序已经涵盖了Apache DNS file sharing等等。
+我使用webmin的主要目的是便于配置系统。直接编辑配置文件虽然很顺手，但有些时候在不知道指令的时候，web界面往往能带来很多帮助。
+安装webmin 首先到下载页面下载适合Ubuntu的deb包，目前最新的版本为1.930。 下载完成后，进入到相应目录
+sudo dpkg -i webmin_1.930_all.deb 一路安装完成后，就可以通过访问server的ip进入到webmin的界面了,需要注意的是webmin默认走的是https协议。
+另一点要注意的是，webmin总的来说还是适合测试环境，应该是考虑到root用户在公网下的访问安全问题，它只支持localhost或者说局域网的访问。如果说一定要在公网下访问webmin，可以考虑端口转发或者网页服务器的代理。
+https://ip:10000 使用webmin 使用root账户正确登陆后，可以修改语言为中文。</description>
+			<content type="html"><![CDATA[
+
+<h1 id="webmin的安装和使用"><strong>webmin的安装和使用</strong></h1>
+
+<p>正如<a href="webmin.com">webmin</a>官网所描述：
+&gt;Webmin is a web-based interface for system administration for Unix. Using any modern web browser, you can setup user accounts, Apache, DNS, file sharing and much more. Webmin removes the need to manually edit Unix configuration files like /etc/passwd, and lets you manage a system from the console or remotely.</p>
+
+<p>webmin做的主要工作就是通过web界面来编辑系统和应用程序的配置文件。其中，支持的应用程序已经涵盖了<code>Apache</code> <code>DNS</code> <code>file sharing</code>等等。</p>
+
+<p>我使用<code>webmin</code>的主要目的是便于配置系统。直接编辑配置文件虽然很顺手，但有些时候在不知道指令的时候，web界面往往能带来很多帮助。</p>
+
+<h2 id="安装webmin"><strong>安装webmin</strong></h2>
+
+<p>首先到<a href="https://prdownloads.sourceforge.net/webadmin/webmin_1.930_all.deb">下载页面</a>下载适合<code>Ubuntu</code>的<code>deb</code>包，目前最新的版本为1.930。
+下载完成后，进入到相应目录</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo dpkg -i webmin_1.930_all.deb</code></pre></div>
+<p>一路安装完成后，就可以通过访问<code>server</code>的<code>ip</code>进入到<code>webmin</code>的界面了,需要注意的是<code>webmin</code>默认走的是<code>https</code>协议。</p>
+
+<p>另一点要注意的是，<code>webmin</code>总的来说还是适合测试环境，应该是考虑到<code>root</code>用户在公网下的访问安全问题，它只支持<code>localhost</code>或者说局域网的访问。如果说一定要在公网下访问<code>webmin</code>，可以考虑端口转发或者网页服务器的代理。</p>
+<div class="highlight"><pre class="chroma"><code class="language-https" data-lang="https">https://ip:10000</code></pre></div>
+<h2 id="使用webmin"><strong>使用webmin</strong></h2>
+
+<p>使用<code>root</code>账户正确登陆后，可以修改语言为中文。</p>
+
+<p><img src="/image/webmin/webmin.jpg" alt="webmin" title="webmin界面" />
+这就是在<code>webmin</code>看到的蜗牛星际的系统信息，可以看出对系统信息的提取还是挺准确的。
+这里着重介绍<code>samba</code>的配置，真的很简单。</p>
+
+<p>首先简单看看我<code>samba</code>的配置。
+<img src="/image/webmin/webmin_samba.jpg" alt="samba" title="samba界面" />
+下面以新建一个名为<code>test</code>的共享文件夹作为演示。
+首先点击上方<code>创建新的文件共享</code>。
+<img src="/image/webmin/step1.jpg" alt="step1" />
+点击进入后按照下图示例在对应位置输入共享文件夹名<code>test</code>以及实际需要共享出去的文件系统中的文件夹。完成后点击<code>新建</code>。
+<img src="/image/webmin/step2.jpg" alt="step2" />
+完成后就能在<code>Samba</code>共享管理器中看到刚刚新建的文件共享。
+<img src="/image/webmin/step3.jpg" alt="step3" />
+点击共享名<code>test</code>来编辑共享信息,点击<code>其他共享选项</code>中的<code>口令和访问控制</code>来编辑设置允许访问的用户以及各个用户的读写权限。
+<img src="/image/webmin/step4.jpg" alt="step4" />
+按照下图在有效的用户以及下方读写用户权限中选择对应的用户名,完成后点击保存。
+<img src="/image/webmin/step5.jpg" alt="stpe5" />
+至此，<code>samba</code>共享文件夹的配置基本上已经完成。<br />
+最后在第一次配置<code>samba</code>的时候需要把<code>Linux</code>系统中的用户转换成<code>samba</code>用户，点击一开始<code>samba共享管理器</code>下方<code>samba users</code>中的<code>转换用户</code>，然后按下图所示进行配置。
+<img src="/image/webmin/step6.jpg" alt="step6" />
+<img src="/image/webmin/step7.jpg" alt="step7" />
+点击<code>转换用户</code>后，新建共享文件就彻底完成了，后续要修改用户或者口令可以在此页面继续修改。</p>
+
+<p>总体思路来说就是要把系统用户先转换为<code>Samba</code>用户，然后创建共享文件夹目录，添加用户权限，这里可以看出<code>webmin</code>下对共享文件目录的权限管理是很简洁清晰的。</p>
+
+<h2 id="总结"><strong>总结</strong></h2>
+
+<p>总的来说，<code>webmin</code>几乎可以配置所有服务器所支持的配置。对于想将<code>Linux</code>用作家用<code>NAS</code>却又不熟悉命令行的用户而言，<code>webmin</code>很容易上手，特别是一般都要安装的<code>Samba</code>的配置十分简单。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Ubuntu Server(一)</title>
+			<link>https://www.96mhy.top/posts/ubuntu_server1/</link>
+			<pubDate>Sat, 24 Aug 2019 00:00:00 +0000</pubDate>
+			
+			<guid>https://www.96mhy.top/posts/ubuntu_server1/</guid>
+			<description>Ubuntu server作家庭nas以及服务器（一） &amp;emsp;因为暑假放假在家无事干，所以7月初在闲鱼以包邮270入手了一台蜗牛星际A单。买这个的目的有俩，一是为了替换掉之前的树莓派，因为树莓派也只是开了samba并没有充分利用GPIO口（只是用GPIO实现了温控风扇来散热，有时间可以写写这）；二是年初就关注过蜗牛星际（毕竟垃圾佬），当时以为会降价，但到现在基本上没啥变化，闲着无聊就入手了。
+毕竟设备也是上过矿场的，买它的要求就只是不要太磕碜，但令我意外的是，成色不错。
+下面就讲讲我折腾他的过程
+开箱 开箱图片：
+配置 都是杂牌 &amp;gt;CPU: Intel® Celeron® CPU J1900 @ 1.99GHz，4 核心 RAM: 4 GB total DISK: 16 GB msata
+背板上有两个USB 3.0,1个HDMI，1个VGA，1个千兆接口，拆机后发现用的是 Intel i211网卡。总体来说，机器主板很新，外观也没有什么划痕，还算满意。
+系统 &amp;emsp;卖家预装了群晖的6.2.1，开箱即可食用。因为之前对群晖的系统心水很久，所以也没有重装啥的，直接开始用。在几天的使用过程中，不得不说群晖的系统做得很不错，不论是功能的完整性还是系统的稳定性，这一次通过docker部署了一些服务。 在群晖的系统上，我主要部署了下面这些服务： &amp;gt; 1. Samba: 用来共享给Windows； &amp;gt; 2. Plex: 通过刮削器识别我下载的一些电影和剧集，界面确实好看； &amp;gt; 3. Aria2+AriaNG: 通过Docker部署来代替群晖的File Station（因为File Station需要缓存，但功能做的很完善）进行BT下载
+&amp;emsp;群晖的系统虽然好用，但有很多功能是我用不上的，并且硬盘也基本上一小时左右就会唤醒一次。同时考虑到蜗牛星际的稳定性，我也不敢把重要的资料放在上面，也就很难体验到群晖生态的妙处,所以在体验了几天黑群晖后，我开始着手转向其他NAS系统。 &amp;emsp;在这个过程中，我首先考虑的是大名鼎鼎的freeNAS(种草于翼王的一个视频)，但freeNAS官方推荐要有8G内存（其实差不多是1T存储对应1G内存），而蜗牛星际只有4G，且只有一个插槽，故作罢。后来还装过OMV,OMV的系统基于debian也很好用，但在装docker的webui的时候一直安装不上，遂转向比较熟悉的Ubuntu。
+Ubuntu Server &amp;emsp;Ubuntu的安装还是很简单的，这里因为不需要图形界面，所以选择了Ubuntu server18.04 LTS，通过UltraISO将镜像写入到U盘，蜗牛星际开机按ESC进入BIOS选择U盘安装即可。安装过程中唯一可能要注意的一点就是在选择镜像的时候最好换成国内的镜像(我用的是清华的镜像。因为后续安装过程中要下载一些东西，国内源的速度会快一点。
+&amp;emsp;系统安装完成后，通过SSH用安装过程中创建的账户连接系统后，简单的配置一下系统。 因为我也没有系统学过Linux，全靠瞎折腾。首就是安装zsh、vim、lrzsz、git之类的软件：
+sudo apt install zsh vim lrzsz git 其次为了在后续过程中，shell用的更舒服，推荐安装oh-my-zsh：
+zsh --version #确认zsh安装成功 sudo chsh -s $(whcih zsh) #将默认shell切换成zsh echo $SHELL #查看是否切换成功，成功的话会显示/usr/bin/zsh.</description>
+			<content type="html"><![CDATA[
+
+<h1 id="ubuntu-server作家庭nas以及服务器-一"><strong>Ubuntu server作家庭nas以及服务器（一）</strong></h1>
+
+<p>&emsp;<em>因为暑假放假在家无事干，所以7月初在闲鱼以包邮270入手了一台蜗牛星际A单。买这个的目的有俩，一是为了替换掉之前的树莓派，因为树莓派也只是开了samba并没有充分利用GPIO口（只是用GPIO实现了温控风扇来散热，有时间可以写写这）；二是年初就关注过蜗牛星际（毕竟垃圾佬），当时以为会降价，但到现在基本上没啥变化，闲着无聊就入手了。</em></p>
+
+<p>毕竟设备也是上过矿场的，买它的要求就只是不要太磕碜，但令我意外的是，成色不错。</p>
+
+<p>下面就讲讲我折腾他的过程</p>
+
+<h2 id="开箱"><strong>开箱</strong></h2>
+
+<p>开箱图片：</p>
+
+<p><img src="/image/woniu.jpg" alt="woniu" /></p>
+
+<h3 id="配置"><strong>配置</strong></h3>
+
+<p>都是杂牌
+&gt;CPU: Intel® Celeron® CPU J1900 @ 1.99GHz，4 核心 RAM: 4 GB total DISK: 16 GB msata</p>
+
+<p>背板上有两个USB 3.0,1个HDMI，1个VGA，1个千兆接口，拆机后发现用的是 Intel i211网卡。总体来说，机器主板很新，外观也没有什么划痕，还算满意。</p>
+
+<h2 id="系统"><strong>系统</strong></h2>
+
+<p>&emsp;卖家预装了群晖的6.2.1，开箱即可食用。因为之前对群晖的系统心水很久，所以也没有重装啥的，直接开始用。在几天的使用过程中，不得不说群晖的系统做得很不错，不论是功能的完整性还是系统的稳定性，这一次通过<code>docker</code>部署了一些服务。 在群晖的系统上，我主要部署了下面这些服务：
+&gt; 1. Samba: 用来共享给Windows；
+&gt; 2. Plex: 通过刮削器识别我下载的一些电影和剧集，界面确实好看；
+&gt; 3. Aria2+AriaNG: 通过Docker部署来代替群晖的File Station（因为File Station需要缓存，但功能做的很完善）进行BT下载</p>
+
+<p>&emsp;群晖的系统虽然好用，但有很多功能是我用不上的，并且硬盘也基本上一小时左右就会唤醒一次。同时考虑到蜗牛星际的稳定性，我也不敢把重要的资料放在上面，也就很难体验到群晖生态的妙处,所以在体验了几天黑群晖后，我开始着手转向其他<code>NAS</code>系统。   </p>
+
+<p>&emsp;在这个过程中，我首先考虑的是大名鼎鼎的<a href="https://www.freenas.org/">freeNAS</a>(种草于<a href="https://www.bilibili.com/video/av30776177">翼王</a>的一个视频)，但<code>freeNAS</code>官方推荐要有8G内存（其实差不多是1T存储对应1G内存），而蜗牛星际只有4G，且只有一个插槽，故作罢。后来还装过<a href="https://www.openmediavault.org/">OMV</a>,<code>OMV</code>的系统基于<code>debian</code>也很好用，但在装<code>docker</code>的<code>webui</code>的时候一直安装不上，遂转向比较熟悉的<code>Ubuntu</code>。</p>
+
+<h3 id="ubuntu-server"><strong>Ubuntu Server</strong></h3>
+
+<p>&emsp;Ubuntu的安装还是很简单的，这里因为不需要图形界面，所以选择了<code>Ubuntu server18.04 LTS</code>，通过<code>UltraISO</code>将镜像写入到U盘，蜗牛星际开机按<code>ESC</code>进入<code>BIOS</code>选择U盘安装即可。安装过程中唯一可能要注意的一点就是在选择镜像的时候最好换成国内的镜像(我用的是<a href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">清华的镜像</a>。因为后续安装过程中要下载一些东西，国内源的速度会快一点。</p>
+
+<p>&emsp;系统安装完成后，通过SSH用安装过程中创建的账户连接系统后，简单的配置一下系统。
+因为我也没有系统学过Linux，全靠瞎折腾。首就是安装<code>zsh</code>、<code>vim</code>、<code>lrzsz</code>、<code>git</code>之类的软件：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo apt install zsh vim lrzsz git</code></pre></div>
+<p>其次为了在后续过程中，shell用的更舒服，推荐安装oh-my-zsh：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">zsh --version 	<span class="c1">#确认zsh安装成功</span>
+sudo chsh -s <span class="k">$(</span>whcih zsh<span class="k">)</span>   <span class="c1">#将默认shell切换成zsh</span>
+<span class="nb">echo</span> <span class="nv">$SHELL</span> 	<span class="c1">#查看是否切换成功，成功的话会显示/usr/bin/zsh.</span>
+<span class="c1">#sudo vim /etc/passed 也可将root和对应用户的shell该为zsh</span>
+sh -c <span class="s2">&#34;</span><span class="k">$(</span>curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh<span class="k">)</span><span class="s2">&#34;</span> 	<span class="c1">#安装oh-my-zsh</span></code></pre></div>
+<p>&emsp;当然后续也可以修改zsh的主题、字体啥的，来达到更加美观的目的，我因为没有太大的需求，就没有再折腾下去。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Raspberry and ssh</title>
+			<link>https://www.96mhy.top/posts/raspberry_and_ssh/</link>
+			<pubDate>Sat, 27 Oct 2018 00:00:00 +0000</pubDate>
+			
+			<guid>https://www.96mhy.top/posts/raspberry_and_ssh/</guid>
+			<description>树莓派以及ssh端口转发 &amp;emsp;前两天入手了一套树莓派Model 3B+，今天就讲讲拿到树莓派后首先做的几件事。因为早一天拿到了SD卡，所以树莓派到手并装上风扇外壳后就插入SD卡点亮开机。
+开机 &amp;emsp;我烧录到SD卡的系统是从树莓派官网下载的RASPBIAN JESSIE LITE简装版（不带图形化界面）。因为没有连接显示器，所以就需要使用ssh来连接板子，这里碰到了踩的第一个坑，查了资料后发现，在某个版本更新后，官方因考虑安全性默认关闭了ssh服务，有一个方法就是将SD卡连到电脑，在根目录新建一个名为ssh的无后缀空文件，这样子就能在第一次成功ssh。同时用一根网线将板子与路由器连接，通过查看路由器后台获得它的局域网IP，通过ssh软件连接，默认账号为pi，密码为raspberry，端口为22。
+ssh端口转发 &amp;emsp;连接上板子后，简单地进行了设置，包括连接了WiFi，安装了一些常用的软件后。问题也就随之而来，之前用于连接树莓派地IP是路由器分配的内网IP，而且一般家庭用户也没有公网IP（电信用户可以申请公网IP，因为很可能是动态IP，所以需要配合ddns服务来实现动态解析），因为我刚好有一个腾讯云的学生机，配有一个公网IP，再在网上了解到ssh这一神级软件具有远程转发，本地转发以及动态转发这三个功能。
+&amp;emsp;简单介绍一下SSH端口转发的原理，因为在树莓派和腾讯云主机上都安装了SSH服务，所以可以通过SSH登陆，在两者的SSH客户端之间建立一个隧道，从而进行通信。
+我们将远程主机腾讯云命名为T，本地的树莓派命名为P。
+本地端口转发  概念：将发送到本地某一端口的网络请求，转发到远程主机的目标端口。
+应用场景： 腾讯云主机T上端口3000运行了一个服务，本地树莓派P需要通过端口2000访问这一服务。
+通过本地端口转发，就可以通过访问本地树莓派的2000端口，来访问云端主机端口3000的服务。
+ 本地端口转发主要使用SSH的-L属性，语法格式如下：
+ -L 本地端口：远程主机地址：目标端口
+ 结合该应用场景，我们只要输入：
+ssh -L 2000：localhost:3000 root@www.96mhy.top 将本地树莓派P登陆远程主机T，并进行本地端口转发
+提示输入密码后就可以连接到远程主机了。
+远程端口转发  概念：将发送到远程某一端口的请求，转发到本地某一个目标端口。
+应用场景：本地树莓派P上端口2000运行了某一服务，远程主机T需要通过端口3000访问这一服务。
+通过远程端口转发，就可以通过访问远程主机的3000端口来访问本地树莓派的2000端口。 远程端口转发主要使用SSH的-R属性，语法格式如下：
+-R 本地端口：本地树莓派地址：目标端口
+ 结合该应用场景，我们只要输入：
+ssh -R 3000：localhost:2000 root@www.96mhy.top 将本地树莓派P登陆远程主机T，并进行远程端口转发
+提示输入密码后就可以连接到远程主机了。
+动态端口转发  概念：前面提到的本地端口转发和远程端口转发，都是两个主机之间一一对应的端口之间的转发，而动态端口转发则只是固定一个本地端口，目标地址和目标端口则是可变的，这两个由本地主机发起的请求所决定。
+应用场景：远程主机机T在多个不同的端口上运行了不同的服务，本地树莓派P要通过访问各个对应的端口来访问这些服务。
+通过动态端口转发，可以将本地树莓派P发起的不同请求，转发到远程主机T的对应的端口。
+ 动态端口转发主要使用SSH的-D属性，语法格式如下：
+ -D 本地树莓派地址：本地端口
+ 结合该应用场景，我们只要输入：
+ssh -D localhost:2000 root@www.96mhy.top 树莓派P上登陆远程主机T，并进行动态端口转发
+输入密码后即可连接至远程主机T。
+&amp;emsp; 在动态端口转发中，对于树莓派P发起的请求，一般可以采用Socket代理来转发到SSH所对应的端口上，这里不再展开叙述。配置完成后，发起的请求就都会转发到2000端口，再通过SSH转发到实际请求的地址。若远程主机处于真正的外网，就能够通过动态端口转发来科学上网。
+&amp;emsp;总的来说，通过采用不同的转发方式可以较好地实现各种应用场景下的需求。当然，这是对ssh很初步地应用，但我对ssh地需求目前也就仅此而已了。在后续折腾的过程中，也会采用其他的内网穿透软件来实现远程ssh。</description>
+			<content type="html"><![CDATA[
+
+<h1 id="树莓派以及ssh端口转发"><strong>树莓派以及ssh端口转发</strong></h1>
+
+<p>&emsp;<em>前两天入手了一套树莓派Model 3B+，今天就讲讲拿到树莓派后首先做的几件事。因为早一天拿到了SD卡，所以树莓派到手并装上风扇外壳后就插入SD卡点亮开机。</em></p>
+
+<h2 id="开机"><strong>开机</strong></h2>
+
+<p>&emsp;我烧录到SD卡的系统是从<a href="https://www.raspberrypi.org/downloads/">树莓派官网</a>下载的RASPBIAN JESSIE LITE简装版（不带图形化界面）。因为没有连接显示器，所以就需要使用ssh来连接板子，这里碰到了踩的第一个坑，查了资料后发现，在某个版本更新后，官方因考虑安全性默认关闭了ssh服务，有一个方法就是将SD卡连到电脑，在根目录新建一个名为ssh的无后缀空文件，这样子就能在第一次成功ssh。同时用一根网线将板子与路由器连接，通过查看路由器后台获得它的局域网IP，通过ssh软件连接，默认账号为pi，密码为raspberry，端口为22。</p>
+
+<h2 id="ssh端口转发"><strong>ssh端口转发</strong></h2>
+
+<p>&emsp;连接上板子后，简单地进行了设置，包括连接了WiFi，安装了一些常用的软件后。问题也就随之而来，之前用于连接树莓派地IP是路由器分配的内网IP，而且一般家庭用户也没有公网IP（电信用户可以申请公网IP，因为很可能是动态IP，所以需要配合ddns服务来实现动态解析），因为我刚好有一个腾讯云的学生机，配有一个公网IP，再在网上了解到ssh这一神级软件具有远程转发，本地转发以及动态转发这三个功能。</p>
+
+<p>&emsp;简单介绍一下SSH端口转发的原理，因为在树莓派和腾讯云主机上都安装了SSH服务，所以可以通过SSH登陆，在两者的SSH客户端之间建立一个隧道，从而进行通信。</p>
+
+<p>我们将远程主机腾讯云命名为T，本地的树莓派命名为P。</p>
+
+<h3 id="本地端口转发"><strong>本地端口转发</strong></h3>
+
+<blockquote>
+<p>概念：将发送到本地某一端口的网络请求，转发到远程主机的目标端口。</p>
+
+<p>应用场景： 腾讯云主机T上端口3000运行了一个服务，本地树莓派P需要通过端口2000访问这一服务。</p>
+
+<p>通过本地端口转发，就可以通过访问本地树莓派的2000端口，来访问云端主机端口3000的服务。</p>
+</blockquote>
+
+<p>本地端口转发主要使用SSH的-L属性，语法格式如下：</p>
+
+<blockquote>
+<p>-L 本地端口：远程主机地址：目标端口</p>
+</blockquote>
+
+<p>结合该应用场景，我们只要输入：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ssh -L <span class="m">2000</span>：localhost:3000
+root@www.96mhy.top</code></pre></div>
+<p>将本地树莓派P登陆远程主机T，并进行本地端口转发</p>
+
+<p>提示输入密码后就可以连接到远程主机了。</p>
+
+<h3 id="远程端口转发"><strong>远程端口转发</strong></h3>
+
+<blockquote>
+<p>概念：将发送到远程某一端口的请求，转发到本地某一个目标端口。</p>
+
+<p>应用场景：本地树莓派P上端口2000运行了某一服务，远程主机T需要通过端口3000访问这一服务。</p>
+
+<p>通过远程端口转发，就可以通过访问远程主机的3000端口来访问本地树莓派的2000端口。
+远程端口转发主要使用SSH的-R属性，语法格式如下：</p>
+
+<p>-R 本地端口：本地树莓派地址：目标端口</p>
+</blockquote>
+
+<p>结合该应用场景，我们只要输入：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ssh -R <span class="m">3000</span>：localhost:2000 
+root@www.96mhy.top</code></pre></div>
+<p>将本地树莓派P登陆远程主机T，并进行远程端口转发</p>
+
+<p>提示输入密码后就可以连接到远程主机了。</p>
+
+<h3 id="动态端口转发"><strong>动态端口转发</strong></h3>
+
+<blockquote>
+<p>概念：前面提到的本地端口转发和远程端口转发，都是两个主机之间一一对应的端口之间的转发，而动态端口转发则只是固定一个本地端口，目标地址和目标端口则是可变的，这两个由本地主机发起的请求所决定。</p>
+
+<p>应用场景：远程主机机T在多个不同的端口上运行了不同的服务，本地树莓派P要通过访问各个对应的端口来访问这些服务。</p>
+
+<p>通过动态端口转发，可以将本地树莓派P发起的不同请求，转发到远程主机T的对应的端口。</p>
+</blockquote>
+
+<p>动态端口转发主要使用SSH的-D属性，语法格式如下：</p>
+
+<blockquote>
+<p>-D 本地树莓派地址：本地端口</p>
+</blockquote>
+
+<p>结合该应用场景，我们只要输入：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ssh -D localhost:2000 
+root@www.96mhy.top</code></pre></div>
+<p>树莓派P上登陆远程主机T，并进行动态端口转发</p>
+
+<p>输入密码后即可连接至远程主机T。</p>
+
+<p>&emsp; 在动态端口转发中，对于树莓派P发起的请求，一般可以采用Socket代理来转发到SSH所对应的端口上，这里不再展开叙述。配置完成后，发起的请求就都会转发到2000端口，再通过SSH转发到实际请求的地址。若远程主机处于真正的外网，就能够通过动态端口转发来科学上网。</p>
+
+<p>&emsp;总的来说，通过采用不同的转发方式可以较好地实现各种应用场景下的需求。当然，这是对ssh很初步地应用，但我对ssh地需求目前也就仅此而已了。在后续折腾的过程中，也会采用其他的内网穿透软件来实现远程ssh。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Add Rule</title>
+			<link>https://www.96mhy.top/posts/user_rule/</link>
+			<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+			
+			<guid>https://www.96mhy.top/posts/user_rule/</guid>
+			<description>$$(R) 中添加规则和UWP应用走代理 &amp;emsp;最近在使用$$R的过程中经常会遇到一个问题：有一些网站并不在GFWList中，所以打开这类网站需要手动调整为全局模式，偶尔使用一两次的话问题不大，但当需要频繁打开这类网站时，每次手动调全局就显得有些繁琐。
+&amp;emsp;简单的说就像Wikipedia有时候会出现无法加载图片和公式；微软家的很多网站或者说应用(Onenote)经常会受到干扰导致打不开或者很慢;Onenote、Onedrive的同步也会频繁掉线，全局的时候上述情况会有很大改善。
+&amp;emsp;所以就去了解了下如何向$$R中添加规则来避免每次都手动切换的烦恼，把方法记录在这篇文章中。
+ 说明一下，考虑到选择编辑user-rule.txt而不是pac.txt是因为pac.txt文件比较复杂。
+ 打开user-rule.txt文件进行编辑
+这里我主要是为了能够让UWP版的OneNote顺利同步以及微软一些网页能够顺利打开看，所以添加了下面的规则。(规则的意思是，以这些域名结尾的所有地址全走代理)
+! Put user rules line by line in this file. ! See https://adblockplus.org/en/filter-cheatsheet ||live.com^ ||live.net^ ||office.com^ ||onenote.com^ ||microsoft.com^  &amp;emsp; 保存user-rule.txt文件后，要选择更新PAC为GFWList。
+当电脑提示更新pac成功后，可以看到打开网页已经走了代理。
+但这个时候UWP版的OneNote仍然会出现无法连接，查阅相关资料发现，UWP应用运行在App Container的虚拟沙箱环境中，这在保证安全性的同时也阻止了UWP应用访问Localhost。
+这里需要一款WindowsLoopbackManager.exe的软件。 打开软件选择需要代理的应用勾选后保存即可。
+这时候回到OneNote就会发现能够顺利同步了。
+总结 &amp;emsp;总的来说，这次折腾还算比较成功。当然这也是最简单偷懒的方法。
+附上网上找的user-rule.txt的完整语法，大家可以参考。
+=== 通配符支持 =&amp;gt; * *.example.com/ 代表 http://example.com http://233.example.com https://233.example.com https://666.example.com/233.mp4 全部走代理。 同时&amp;quot;*&amp;quot;可省略，.example.com/ 与 *.example.com/ 效果是一样的 === 正则表达式支持 以 \ 开始和结束，\[\w]+:\/\/example.com\ === 例外规则 =&amp;gt; @@ @@*.example.com/ 表示&amp;quot;@@&amp;quot;后面的网址规则(*.example.com)不走代理 如：@@www.baidu.com 表示 www.baidu.com 不走代理 === 匹配地址开始和结尾规则 =&amp;gt; | |http://example.</description>
+			<content type="html"><![CDATA[
+
+<h1 id="r-中添加规则和uwp应用走代理"><code>$$(R)</code> 中添加规则和UWP应用走代理</h1>
+
+<p>&emsp;最近在使用<code>$$R</code>的过程中经常会遇到一个问题：有一些网站并不在<code>GFWList</code>中，所以打开这类网站需要手动调整为全局模式，偶尔使用一两次的话问题不大，但当需要频繁打开这类网站时，每次手动调全局就显得有些繁琐。</p>
+
+<p>&emsp;简单的说就像<code>Wikipedia</code>有时候会出现无法加载图片和公式；微软家的很多网站或者说应用(<code>Onenote</code>)经常会受到干扰导致打不开或者很慢;<code>Onenote</code>、<code>Onedrive</code>的同步也会频繁掉线，全局的时候上述情况会有很大改善。</p>
+
+<p>&emsp;所以就去了解了下如何向<code>$$R</code>中添加规则来避免每次都手动切换的烦恼，把方法记录在这篇文章中。</p>
+
+<blockquote>
+<p>说明一下，考虑到选择编辑<code>user-rule.txt</code>而不是<code>pac.txt</code>是因为<code>pac.txt</code>文件比较复杂。</p>
+</blockquote>
+
+<p>打开<code>user-rule.txt</code>文件进行编辑</p>
+
+<p><img src="/image/User-rule/user-rule.jpg" alt="user-rule" /></p>
+
+<p><img src="/image/User-rule/user-rule2.jpg" alt="user-rule2" /></p>
+
+<p>这里我主要是为了能够让<code>UWP</code>版的<code>OneNote</code>顺利同步以及微软一些网页能够顺利打开看，所以添加了下面的规则。(规则的意思是，以这些域名结尾的所有地址全走代理)</p>
+
+<pre><code>! Put user rules line by line in this file.
+! See https://adblockplus.org/en/filter-cheatsheet
+
+||live.com^
+||live.net^
+||office.com^
+||onenote.com^
+||microsoft.com^
+</code></pre>
+
+<p>&emsp; 保存<code>user-rule.txt</code>文件后，要选择更新<code>PAC</code>为<code>GFWList</code>。</p>
+
+<p><img src="/image/User-rule/user-rule3.jpg" alt="update" /></p>
+
+<p>当电脑提示更新<code>pac</code>成功后，可以看到打开网页已经走了代理。</p>
+
+<p>但这个时候<code>UWP</code>版的<code>OneNote</code>仍然会出现无法连接，查阅相关资料发现，UWP应用运行在<code>App Container</code>的虚拟沙箱环境中，这在保证安全性的同时也阻止了<code>UWP</code>应用访问<code>Localhost</code>。</p>
+
+<p>这里需要一款<a href="File/WindowsLoopbackManager.exe," title="下载链接"><code>WindowsLoopbackManager.exe</code></a>的软件。
+打开软件选择需要代理的应用勾选后保存即可。</p>
+
+<p><img src="/image/User-rule/Loopback.jpg" alt="loopback" /></p>
+
+<p>这时候回到<code>OneNote</code>就会发现能够顺利同步了。</p>
+
+<p><img src="image/User-rule/OneNote.jpg" alt="onenote" /></p>
+
+<h3 id="总结">总结</h3>
+
+<p>&emsp;总的来说，这次折腾还算比较成功。当然这也是最简单偷懒的方法。</p>
+
+<p>附上网上找的<code>user-rule.txt</code>的完整语法，大家可以参考。</p>
+
+<pre><code>=== 通配符支持 =&gt; *
+*.example.com/ 代表 http://example.com http://233.example.com https://233.example.com https://666.example.com/233.mp4 全部走代理。
+同时&quot;*&quot;可省略，.example.com/ 与 *.example.com/ 效果是一样的
+ 
+=== 正则表达式支持
+以 \ 开始和结束，\[\w]+:\/\/example.com\
+ 
+=== 例外规则 =&gt; @@
+@@*.example.com/ 表示&quot;@@&quot;后面的网址规则(*.example.com)不走代理
+如：@@www.baidu.com 表示 www.baidu.com 不走代理
+ 
+=== 匹配地址开始和结尾规则 =&gt; |
+|http://example.com、example.com| 分别表示 以http://example.com开始 和 以example.com结束 的地址
+如：|http://233.com ，代表 http://233.com 开头的网址才会走代理，即 https://233.com http://1.233.com 都不会走代理
+如：233.com|，代表 233.com 结尾的网站才会走代理，即 http://233.com https://233.com http://1.233.com 都会走带了，而 http://233.com/index.html 不会走代理。
+ 
+=== 全匹配规则 =&gt; ||
+||example.com 则代表 http://example.com、https://example.com、ftp://example.com 等协议的地址全部走代理
+如：||233.com ，即 http://233.com、https://233.com、ftp://233.com 等地址全都走代理
+ 
+=== 注释规则 =&gt; !
+!我是注释233
+!我也是注释666
+</code></pre>
+]]></content>
+		</item>
+		
+	</channel>
+</rss>
