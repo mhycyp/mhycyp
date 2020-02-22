@@ -362,7 +362,7 @@ https://ip:10000 使用webmin 使用root账户正确登陆后，可以修改语�
 Ubuntu Server &amp;emsp;Ubuntu的安装还是很简单的，这里因为不需要图形界面，所以选择了Ubuntu server18.04 LTS，通过UltraISO将镜像写入到U盘，蜗牛星际开机按ESC进入BIOS选择U盘安装即可。安装过程中唯一可能要注意的一点就是在选择镜像的时候最好换成国内的镜像(我用的是清华的镜像。因为后续安装过程中要下载一些东西，国内源的速度会快一点。
 &amp;emsp;系统安装完成后，通过SSH用安装过程中创建的账户连接系统后，简单的配置一下系统。 因为我也没有系统学过Linux，全靠瞎折腾。首就是安装zsh、vim、lrzsz、git之类的软件：
 sudo apt install zsh vim lrzsz git 其次为了在后续过程中，shell用的更舒服，推荐安装oh-my-zsh：
-zsh --version #确认zsh安装成功 sudo chsh -s $(whcih zsh) #将默认shell切换成zsh echo $SHELL #查看是否切换成功，成功的话会显示/usr/bin/zsh.</description>
+zsh --version #确认zsh安装成功 sudo chsh -s $(which zsh) #将默认shell切换成zsh echo $SHELL #查看是否切换成功，成功的话会显示/usr/bin/zsh.</description>
 			<content type="html"><![CDATA[
 
 <h1 id="ubuntu-server作家庭nas以及服务器-一"><strong>Ubuntu server作家庭nas以及服务器（一）</strong></h1>
@@ -406,9 +406,9 @@ zsh --version #确认zsh安装成功 sudo chsh -s $(whcih zsh) #将默认shell�
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo apt install zsh vim lrzsz git</code></pre></div>
 <p>其次为了在后续过程中，shell用的更舒服，推荐安装oh-my-zsh：</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">zsh --version 	<span class="c1">#确认zsh安装成功</span>
-sudo chsh -s <span class="k">$(</span>whcih zsh<span class="k">)</span>   <span class="c1">#将默认shell切换成zsh</span>
+sudo chsh -s <span class="k">$(</span>which zsh<span class="k">)</span>   <span class="c1">#将默认shell切换成zsh</span>
 <span class="nb">echo</span> <span class="nv">$SHELL</span> 	<span class="c1">#查看是否切换成功，成功的话会显示/usr/bin/zsh.</span>
-<span class="c1">#sudo vim /etc/passed 也可将root和对应用户的shell该为zsh</span>
+<span class="c1">#sudo vim /etc/passwd 也可将root和对应用户的shell该为zsh</span>
 sh -c <span class="s2">&#34;</span><span class="k">$(</span>curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh<span class="k">)</span><span class="s2">&#34;</span> 	<span class="c1">#安装oh-my-zsh</span></code></pre></div>
 <p>&emsp;当然后续也可以修改zsh的主题、字体啥的，来达到更加美观的目的，我因为没有太大的需求，就没有再折腾下去。</p>
 ]]></content>
